@@ -23,7 +23,7 @@ jobs:
           fail: true
   build:
     name: build-build
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     needs: sast
     steps:
       - uses: actions/checkout@v4
