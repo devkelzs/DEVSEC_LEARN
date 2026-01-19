@@ -13,9 +13,9 @@ permissions:
 jobs:
   secrets-scan:
     name: gitleaks
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Run gitleaks
         uses: gitleaks/gitleaks-action@v2.3.6
