@@ -1,0 +1,50 @@
+name: secure_ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  secrets-scan:
+    name: gitleaks
+    runs_on: ubuntu-latest
+    steps:
+      uses: actions/checkout@v4
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2.3.6
+        with:
+          fail: true
+build:
+  name: build-build
+  runs_on: ubuntu-latest
+  needs: sast
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Build Project
+      run: |
+        echo "Building the project..."
+        docker build -t dem-app:ci .
+
+container-scan:
+  name: trivy
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Build image for scanning
+      run: docker build -t dem-app:ci .
+
+    - name: Trivy scan
+      uses: aquasecurity/trivy-action@v0.10.3
+      with:
+        image-ref: dem-app:ci
+        severity: HIGH,CRITICAL
+        exit-code: 1
+        ignore-unfixed: true

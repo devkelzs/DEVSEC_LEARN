@@ -1,0 +1,20 @@
+rules:
+  -id: no-hardcoded-password
+   pattern: password = "..."
+   message: "Avoid hardcoding passwords in the source code."
+   severity: ERROR
+    languages: [python, javascript, java, ruby, go]
+
+sast:
+  name: semgrep
+  runs_on: ubuntu-latest
+  needs: secrets-scan
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Run Semgrep
+      uses: semgrep/semgrep-action@v1
+      env:
+        SEMGREP_RULES: |
+          p/default
+          .semgrep.yml
